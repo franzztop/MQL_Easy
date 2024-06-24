@@ -115,8 +115,9 @@ long CHistoryPosition::SelectByIndex(int indexPar)
       bool selectedTemp = OrderSelect(i,SELECT_BY_POS,MODE_HISTORY);
 		if (selectedTemp){
 		   //-- History Range Check
-		   if(!this.HistoryRange(OrderCloseTime()))break;
+		   if(!this.HistoryRange(OrderCloseTime()))continue;
 		   //--
+		   if(OrderType() == 6)continue; // This type of order is the initial deposit
 		   this.ValidSelection = true;
          if(this.ValidPosition(OrderSymbol(),OrderMagicNumber(),OrderType()))
          { 	
@@ -172,7 +173,7 @@ int CHistoryPosition::GroupTotal()
       bool selectedTemp = OrderSelect(i,SELECT_BY_POS,MODE_HISTORY);      
 		if (selectedTemp){
 		   //-- History Range Check
-		   if(!this.HistoryRange(OrderCloseTime()))break;
+		   if(!this.HistoryRange(OrderCloseTime()))continue;
 		   //--
 		   if(OrderType() == 6)continue; // This type of order is the initial deposit
          if(this.ValidPosition(OrderSymbol(),OrderMagicNumber(),OrderType()))totalDeals++;  		   
