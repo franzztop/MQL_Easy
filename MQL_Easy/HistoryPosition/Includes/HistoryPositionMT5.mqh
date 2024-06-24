@@ -129,7 +129,7 @@ long CHistoryPosition::SelectByIndex(int indexPar)
          { 	
             if(numberPositions == indexPar){
                this.mTicket = HistoryDealGetInteger(ticketTemp,DEAL_POSITION_ID);
-               return ticketTemp;   
+               return this.mTicket;
             }
             numberPositions++; 
          }
@@ -158,7 +158,7 @@ bool CHistoryPosition::SelectByTicket(long ticketPar)
 {
    //-- Reset the ticket
    this.mTicket = -1;
-   if(HistoryDealSelect(ticketPar)){   
+   if(HistorySelectByPosition(ticketPar)){
       this.mTicket         = ticketPar;
       this.ValidSelection  = true;
       return true;
