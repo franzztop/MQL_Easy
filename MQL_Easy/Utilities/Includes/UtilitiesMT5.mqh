@@ -40,16 +40,18 @@ CUtilities::~CUtilities()
 //|                       fixFillingOrder                            |
 //+------------------------------------------------------------------+
 ENUM_ORDER_TYPE_FILLING CUtilities::FillingOrder()
-{   
+{
    //-- Find the filling mode
    uint fillingTemp=(uint)SymbolInfoInteger(this.Symbol,SYMBOL_FILLING_MODE);
    //-- check if any error occurs
-   if(this.Error.CheckLastError(true,__FUNCTION__))return WRONG_VALUE;
+   if(this.Error.CheckLastError(true,__FUNCTION__))
+      return WRONG_VALUE;
    //-- ORDER_FILLING_FOK
    if((fillingTemp&SYMBOL_FILLING_FOK)==SYMBOL_FILLING_FOK){
       return ORDER_FILLING_FOK;
    }//-- ORDER_FILLING_IOC
    else if((fillingTemp&SYMBOL_FILLING_IOC)==SYMBOL_FILLING_IOC){
       return ORDER_FILLING_IOC;
-   }else return ORDER_FILLING_RETURN;
+   }else
+      return ORDER_FILLING_RETURN;
 }
