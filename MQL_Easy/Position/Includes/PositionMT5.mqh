@@ -361,6 +361,8 @@ void CPosition::GroupCloseAll(uint triesPar = 20)
 		   if(!OrderSend(request,result)){
 				string msgTemp = "The Position WAS NOT Closed.";
             this.Error.CreateErrorCustom(msgTemp,true,false,(__FUNCTION__),0,"",result.retcode);
+   	      if (result.retcode == TRADE_RETCODE_MARKET_CLOSED)
+   	         continue;
             Sleep(1000);
             triesTemp++;
             if(triesTemp >= triesPar)continue;
@@ -546,6 +548,8 @@ bool CPosition::Close(uint triesPar = 20)
 	   if(!OrderSend(request,result)){
          string msgTemp = "The Position WAS NOT Closed.";
          this.Error.CreateErrorCustom(msgTemp,true,false,(__FUNCTION__),0,"",result.retcode);
+	      if (result.retcode == TRADE_RETCODE_MARKET_CLOSED)
+	         break;
          Sleep(1000);
          //-- Extra Layer Of Safety
          if(!PositionSelectByTicket(this.GetTicket())){
@@ -607,6 +611,8 @@ bool CPosition::ClosePartial(double volumePar, uint triesPar = 20)
 	   if(!OrderSend(request,result)){
 			string msgTemp = "The Position WAS NOT Closed.";
          this.Error.CreateErrorCustom(msgTemp,true,false,(__FUNCTION__),0,"",result.retcode);
+	      if (result.retcode == TRADE_RETCODE_MARKET_CLOSED)
+	         break;
          Sleep(1000);
          //-- Extra Layer Of Safety
          if(!PositionSelectByTicket(this.GetTicket())){
