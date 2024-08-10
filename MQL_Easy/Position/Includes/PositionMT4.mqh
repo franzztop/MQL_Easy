@@ -323,8 +323,11 @@ void CPosition::GroupCloseAll(uint triesPar = 20)
 		   bool resultTemp = OrderClose(OrderTicket(), OrderLots(), priceTemp, 3, colorTemp);//actual Position closing
 			if (resultTemp != true)
 			{
+            const int lastError = _LastError;
 			   string msgTemp = "The Position WAS NOT Closed.";
             this.Error.CreateErrorCustom(msgTemp,true,false,(__FUNCTION__));
+   		   if (lastError == ERR_MARKET_CLOSED)
+   		      continue;
             Sleep(1000);
             triesTemp++;
             if(triesTemp >= triesPar)continue;
@@ -488,8 +491,11 @@ bool CPosition::Close(uint triesPar = 20)
       bool result = OrderClose((int)this.GetTicket(),this.GetVolume(),closePrice, 3, colorTemp);
 	   if (result != true)//if it did not close
       {
+         const int lastError = _LastError;
 	      string msgTemp = "The Position WAS NOT Closed.";
          this.Error.CreateErrorCustom(msgTemp,true,false,(__FUNCTION__));
+		   if (lastError == ERR_MARKET_CLOSED)
+		      break;
          Sleep(1000);
          //-- Extra Layer Of Safety
          if(!OrderSelect((int)this.GetTicket(),SELECT_BY_TICKET,MODE_TRADES)){
@@ -529,8 +535,11 @@ bool CPosition::ClosePartial(double volumePar,uint triesPar = 20)
 	   bool result = OrderClose((int)this.GetTicket(),volumePar,closePrice, 3, colorTemp);
 	   if (result != true)//if it did not close
       {
+         const int lastError = _LastError;
 	      string msgTemp = "The Position WAS NOT Closed.";
          this.Error.CreateErrorCustom(msgTemp,true,false,(__FUNCTION__));
+		   if (lastError == ERR_MARKET_CLOSED)
+		      break;
          Sleep(1000);
          //-- Extra Layer Of Safety
          if(!OrderSelect((int)this.GetTicket(),SELECT_BY_TICKET,MODE_TRADES)){
