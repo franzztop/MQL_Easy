@@ -70,6 +70,7 @@ bool CValidationCheck::CheckMoneyForTrade(string symbolPar,double volumePar,ENUM
 //+------------------------------------------------------------------+  
 bool CValidationCheck::CheckStopLossTakeprofit(string symbolPar,ENUM_ORDER_TYPE typePar, double openPricePar,double stopLossPar,double takeProfitPar)
   {
+   ResetLastError();
 //--- get the SYMBOL_TRADE_STOPS_LEVEL level
    RefreshRates();
    int stops_level=(int)SymbolInfoInteger(symbolPar,SYMBOL_TRADE_STOPS_LEVEL);
@@ -185,6 +186,7 @@ bool CValidationCheck::CheckStopLossTakeprofit(string symbolPar,ENUM_ORDER_TYPE 
 //+------------------------------------------------------------------+  
 bool CValidationCheck::CheckPendingFreezeLevel(string symbolPar, int typePar, double openPricePar)
 {
+   ResetLastError();
    RefreshRates();
    int freezeLevel = (int)SymbolInfoInteger(symbolPar,SYMBOL_TRADE_FREEZE_LEVEL); 
    int stops_level = (int)SymbolInfoInteger(symbolPar,SYMBOL_TRADE_STOPS_LEVEL);

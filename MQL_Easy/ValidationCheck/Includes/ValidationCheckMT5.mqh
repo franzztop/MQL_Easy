@@ -48,6 +48,7 @@ CValidationCheck::~CValidationCheck()
 //+------------------------------------------------------------------+
 bool CValidationCheck::CheckMoneyForTrade(string symbolPar,double volumePar,ENUM_ORDER_TYPE typePar)
   {
+   ResetLastError();
    //--- Open Price
    double openPriceTemp = SymbolInfoDouble(symbolPar,SYMBOL_ASK);
    if(typePar == ORDER_TYPE_SELL)openPriceTemp = SymbolInfoDouble(symbolPar,SYMBOL_BID);
@@ -83,6 +84,7 @@ bool CValidationCheck::CheckMoneyForTrade(string symbolPar,double volumePar,ENUM
 //+------------------------------------------------------------------+  
 bool CValidationCheck::CheckStopLossTakeprofit(string symbolPar,ENUM_ORDER_TYPE typePar, double openPricePar,double stopLossPar,double takeProfitPar)
   {
+   ResetLastError();
 //--- get the SYMBOL_TRADE_STOPS_LEVEL level
    int stops_level=(int)SymbolInfoInteger(symbolPar,SYMBOL_TRADE_STOPS_LEVEL);
 //---
@@ -200,6 +202,7 @@ bool CValidationCheck::CheckStopLossTakeprofit(string symbolPar,ENUM_ORDER_TYPE 
 //+------------------------------------------------------------------+  
 bool CValidationCheck::CheckPendingFreezeLevel(string symbolPar, int typePar, double openPricePar)
   {
+   ResetLastError();
    //--
    int freezeLevel = (int)SymbolInfoInteger(symbolPar,SYMBOL_TRADE_FREEZE_LEVEL); 
    int stops_level = (int)SymbolInfoInteger(symbolPar,SYMBOL_TRADE_STOPS_LEVEL);
@@ -332,6 +335,7 @@ bool CValidationCheck::CheckMaxNumberPendingOrders()
 //+------------------------------------------------------------------+
 bool CValidationCheck::CheckMaxVolume(string symbolPar, ulong typePar, double volumePar)
 {
+   ResetLastError();
    //-- Maximum Volume on that symbol
    double maxVolumeTemp = SymbolInfoDouble(symbolPar,SYMBOL_VOLUME_LIMIT);
    //-- check if any error occurs

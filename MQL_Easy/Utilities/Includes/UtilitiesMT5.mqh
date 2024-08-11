@@ -41,6 +41,7 @@ CUtilities::~CUtilities()
 //+------------------------------------------------------------------+
 ENUM_ORDER_TYPE_FILLING CUtilities::FillingOrder()
 {
+   ResetLastError();
    //-- Find the filling mode
    uint fillingTemp=(uint)SymbolInfoInteger(this.Symbol,SYMBOL_FILLING_MODE);
    //-- check if any error occurs
