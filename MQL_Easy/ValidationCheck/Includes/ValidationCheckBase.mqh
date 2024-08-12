@@ -33,6 +33,7 @@ public:
 //+------------------------------------------------------------------+
 bool CValidationCheckBase::CheckVolumeValue(string symbolPar, double volumePar)
 {
+   ResetLastError();
    //-- get information from the symbol
    double minVolume = SymbolInfoDouble(symbolPar,SYMBOL_VOLUME_MIN);
    double maxVolume = SymbolInfoDouble(symbolPar,SYMBOL_VOLUME_MAX);
