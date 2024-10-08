@@ -19,13 +19,13 @@ private:
 public:  
                      CExecute(string symbolPar = NULL, long magicNumberPar = 12345);
                     ~CExecute();
-   virtual long      Position(ENUM_TYPE_POSITION positionTypePar,double volumePar,double stopLossPar = 0,double takeProfitPar = 0,ENUM_SLTP_TYPE sltpPar = 0,
+   virtual long      Position(ENUM_TYPE_POSITION positionTypePar,double volumePar,double stopLossPar = 0.0,double takeProfitPar = 0.0,ENUM_SLTP_TYPE sltpPar = 0,
                               int deviationPar = 10,string commentPar = NULL);
-   virtual long      Order(ENUM_TYPE_ORDER orderTypePar,double volumePar, double openPricePar, double stopLossPar = 0, double takeProfitPar = 0, 
+   virtual long      Order(ENUM_TYPE_ORDER orderTypePar,double volumePar, double openPricePar, double stopLossPar = 0.0, double takeProfitPar = 0.0, 
                               ENUM_SLTP_TYPE sltpPar = 0, datetime expirationPar = 0,int deviationPar = 10, string commentPar = NULL);     
-   virtual void      PositionAsync(ENUM_TYPE_POSITION positionTypePar,double volumePar,double stopLossPar = 0,double takeProfitPar = 0,
+   virtual void      PositionAsync(ENUM_TYPE_POSITION positionTypePar,double volumePar,double stopLossPar = 0.0,double takeProfitPar = 0.0,
                               ENUM_SLTP_TYPE sltpPar = 0, int deviationPar = 10,string commentPar = NULL);
-   virtual void      OrderAsync(ENUM_TYPE_ORDER orderTypePar,double volumePar, double openPricePar, double stopLossPar = 0, double takeProfitPar = 0, 
+   virtual void      OrderAsync(ENUM_TYPE_ORDER orderTypePar,double volumePar, double openPricePar, double stopLossPar = 0.0, double takeProfitPar = 0.0, 
                               ENUM_SLTP_TYPE sltpPar = 0, datetime expirationPar = 0,int deviationPar = 10, string commentPar = NULL);                                            
   };
 //+------------------------------------------------------------------+
