@@ -46,7 +46,9 @@ public:
    void                    SetGroup(GROUP_HISTORY_POSITIONS groupPar){this.Group = groupPar;}         
    string                  SetGroupSymbol(){return this.GroupSymbol;}
    long                    SetGroupMagicNumber(){return this.GroupMagicNumber;} 
-   GROUP_HISTORY_POSITIONS SetGroup(){return this.Group;}  
+   string                  GetGroupSymbol(){return this.GroupSymbol;}
+   long                    GetGroupMagicNumber(){return this.GroupMagicNumber;}
+   GROUP_HISTORY_POSITIONS GetGroup(){return this.Group;}
    void                    SetHistoryRange(datetime startPar,datetime endPar){this.StartDate = startPar;this.EndDate = endPar;}
    datetime                GetRangeStart(){return this.StartDate;}
    datetime                GetRangeEnd(){return this.EndDate;}
