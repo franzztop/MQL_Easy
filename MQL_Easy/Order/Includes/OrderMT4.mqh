@@ -364,10 +364,13 @@ bool COrder::Modify(double priceOpenPar = WRONG_VALUE,double stopLossPar = WRONG
    int   typeTemp          = (int)this.GetType(); 
    //-- Check Expiration Parameter
    if(expirationPar == WRONG_VALUE)expirationTemp = (datetime)this.GetTimeExpiration();
-   else if(expirationPar <= TimeCurrent()){
-      Print("The expiration parameter must be greater than "+(string)TimeCurrent()+" , Function("+__FUNCTION__+")");
-      string msgTemp = "The expiration parameter must be greater than "+(string)TimeCurrent();
-      return this.Error.CreateErrorCustom(msgTemp,true,false);
+   else {
+      if(expirationPar <= TimeCurrent()){
+         Print("The expiration parameter must be greater than "+(string)TimeCurrent()+" , Function("+__FUNCTION__+")");
+         string msgTemp = "The expiration parameter must be greater than "+(string)TimeCurrent();
+         return this.Error.CreateErrorCustom(msgTemp,true,false);
+      }
+      expirationTemp = expirationPar;
    }  
    CValidationCheck validationCheckTemp;
    //-- Price Open Validation
@@ -386,9 +389,9 @@ bool COrder::Modify(double priceOpenPar = WRONG_VALUE,double stopLossPar = WRONG
    stopLossTemp   = (stopLossPar == WRONG_VALUE)      ? this.GetStopLoss()    : stopLossTemp;  
    takeProfitTemp = (takeProfitPar == WRONG_VALUE)    ? this.GetTakeProfit()  : takeProfitTemp;
    //-- Check if there is no need to make any modification
-   if(!validationCheckTemp.CheckModifyLevels(this.GetTicket(),priceOpenTemp,stopLossTemp,takeProfitTemp)){this.Error.Copy(validationCheckTemp.Error);return false;}
+   if(!validationCheckTemp.CheckModifyLevels(this.GetTicket(),priceOpenTemp,stopLossTemp,takeProfitTemp) && expirationTemp == this.GetTimeExpiration()){this.Error.Copy(validationCheckTemp.Error);return false;}
    //-- Modify              
-   if(!OrderModify((int)this.GetTicket(),priceOpenTemp,stopLossTemp,takeProfitTemp,0,clrBlue)){
+   if(!OrderModify((int)this.GetTicket(),priceOpenTemp,stopLossTemp,takeProfitTemp,expirationTemp,clrBlue)){
       string msgTemp = "The Order WAS NOT Modified.";
       this.Error.CreateErrorCustom(msgTemp,true,false,(__FUNCTION__));
       return false;        
