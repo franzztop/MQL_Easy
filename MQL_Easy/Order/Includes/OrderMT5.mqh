@@ -404,6 +404,7 @@ bool COrder::Modify(double priceOpenPar = WRONG_VALUE,double stopLossPar = WRONG
    request.symbol             = symbolTemp;       
    request.magic              = this.GetMagicNumber();  
    request.order              = this.GetTicket();    
+   request.type_time          = expirationTemp != 0 ? ORDER_TIME_SPECIFIED : ORDER_TIME_GTC;
    request.expiration         = expirationTemp;                        
    request.price              = priceOpenTemp;                                      
    request.sl                 = stopLossTemp;                                

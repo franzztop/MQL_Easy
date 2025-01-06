@@ -128,6 +128,8 @@ long CExecute::Order(ENUM_TYPE_ORDER orderTypePar,double volumePar,double openPr
    request.type            = (ENUM_ORDER_TYPE)orderTypePar;      
    request.price           = priceTemp;
    request.deviation       = deviationPar;
+   request.type_time       = expirationPar != 0 ? ORDER_TIME_SPECIFIED : ORDER_TIME_GTC;
+   request.expiration      = expirationPar;
    request.comment         = commentPar;
    //-- Filling Order Problem
    request.type_filling    = utilsTemp.FillingOrder();
@@ -225,6 +227,8 @@ void CExecute::OrderAsync(ENUM_TYPE_ORDER orderTypePar,double volumePar,double o
    request.type            = (ENUM_ORDER_TYPE)orderTypePar;      
    request.price           = priceTemp;
    request.deviation       = deviationPar;
+   request.type_time       = expirationPar != 0 ? ORDER_TIME_SPECIFIED : ORDER_TIME_GTC;
+   request.expiration      = expirationPar;
    request.comment         = commentPar;
    //-- Filling Order Problem
    request.type_filling    = utilsTemp.FillingOrder();
