@@ -118,9 +118,9 @@ bool CHistoryPositionBase::ValidPosition(string tradeSymbolPar,long tradeMagicPa
    bool typeTemp   = false;
    switch(this.Group)
    {
-      case GROUP_HISTORY_POSITIONS_ALL            : typeTemp = (tradeTypePar == 0 || tradeTypePar == 1); break;
-      case GROUP_HISTORY_POSITIONS_BUY            : typeTemp = (tradeTypePar == 0); break;
-      case GROUP_HISTORY_POSITIONS_SELL           : typeTemp = (tradeTypePar == 1); break;
+      case GROUP_HISTORY_POSITIONS_ALL            : typeTemp = (tradeTypePar == DEAL_TYPE_BUY || tradeTypePar == DEAL_TYPE_SELL); break;
+      case GROUP_HISTORY_POSITIONS_BUY            : typeTemp = (tradeTypePar == DEAL_TYPE_BUY); break;
+      case GROUP_HISTORY_POSITIONS_SELL           : typeTemp = (tradeTypePar == DEAL_TYPE_SELL); break;
    }
    
    return (symbolTemp && magicTemp && typeTemp);
