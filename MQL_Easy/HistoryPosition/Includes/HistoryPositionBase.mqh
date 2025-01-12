@@ -10,6 +10,13 @@
 #include "../../Error/Error.mqh"
 
 
+#ifndef DEAL_TYPE_BUY
+#define DEAL_TYPE_BUY 0
+#endif
+#ifndef DEAL_TYPE_SELL
+#define DEAL_TYPE_SELL 1
+#endif
+
 enum GROUP_HISTORY_POSITIONS
 {
    GROUP_HISTORY_POSITIONS_ALL           = -1,     
