@@ -251,9 +251,14 @@ double CHistoryPosition::GroupTotalProfit(void)
                   && HistoryDealGetInteger(ticketTemp,DEAL_TYPE) != DEAL_TYPE_BALANCE
                   && HistorySelectByPosition(HistoryDealGetInteger(ticketTemp,DEAL_POSITION_ID))
                   && (ticketTemp = HistoryDealGetTicket(HistoryDealsTotal()-1)) > 0
-                  && (HistoryDealGetInteger(ticketTemp,DEAL_ENTRY) == DEAL_ENTRY_OUT || HistoryDealGetInteger(ticketTemp,DEAL_ENTRY) == DEAL_ENTRY_OUT_BY))
-               positionsProfit += HistoryDealGetDouble(ticketTemp,DEAL_PROFIT) + HistoryDealGetDouble(ticketTemp,DEAL_SWAP) 
-                  + HistoryDealGetDouble(ticketTemp,DEAL_COMMISSION);  		   
+                  && (HistoryDealGetInteger(ticketTemp,DEAL_ENTRY) == DEAL_ENTRY_OUT || HistoryDealGetInteger(ticketTemp,DEAL_ENTRY) == DEAL_ENTRY_OUT_BY)){
+            for(int d = 0; d < HistoryDealsTotal(); d++){
+               ticketTemp = HistoryDealGetTicket(d);
+               if (ticketTemp > 0)
+                  positionsProfit += HistoryDealGetDouble(ticketTemp,DEAL_PROFIT) + HistoryDealGetDouble(ticketTemp,DEAL_SWAP) 
+                     + HistoryDealGetDouble(ticketTemp,DEAL_COMMISSION);  		   
+            }               
+         }
 		}else{
          string msgTemp = "The History Position WAS NOT Selected.";
          this.Error.CreateErrorCustom(msgTemp,true,false,(__FUNCTION__));
