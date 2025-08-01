@@ -45,7 +45,7 @@ public:
    virtual bool            ClosePartial(double volumePar,uint triesPar = 20);
    virtual bool            Modify(double stopLossPar = WRONG_VALUE,double takeProfitPar = WRONG_VALUE, ENUM_SLTP_TYPE sltpPar = SLTP_PRICE); 
    virtual long            SelectByIndex(int indexPar);
-   virtual bool            SelectByTicket(long ticketPar);                          
+   virtual bool            SelectByTicket(long ticketPar, bool enableLog = true);                          
    //-- Quick Access
    CPosition*              operator[](const int indexPar);
    CPosition*              operator[](const long ticketPar);                           
@@ -128,7 +128,7 @@ long CPosition::SelectByIndex(int indexPar)
 //+------------------------------------------------------------------+
 //|      select a position by ticket
 //+------------------------------------------------------------------+
-bool CPosition::SelectByTicket(long ticketPar)
+bool CPosition::SelectByTicket(long ticketPar, bool enableLog = true)
 {
    if(OrderSelect((int)ticketPar,SELECT_BY_TICKET,MODE_TRADES)){
       this.ValidSelection = true; // the selection is valid
@@ -136,8 +136,11 @@ bool CPosition::SelectByTicket(long ticketPar)
    }
    else{
       this.ValidSelection = false;
-      string msgTemp = "The Position WAS NOT Selected.";
-      return this.Error.CreateErrorCustom(msgTemp,true,false,(__FUNCTION__));
+      if (enableLog){
+         string msgTemp = "The Position WAS NOT Selected.";
+         return this.Error.CreateErrorCustom(msgTemp,true,false,(__FUNCTION__));
+      }
+      return false;
    }
 }
 

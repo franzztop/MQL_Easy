@@ -38,7 +38,7 @@ public:
    virtual bool            Modify(double priceOpenPar = WRONG_VALUE,double stopLossPar = WRONG_VALUE,double takeProfitPar = WRONG_VALUE,
                                        ENUM_SLTP_TYPE sltpPar = SLTP_PRICE, datetime expirationPar = WRONG_VALUE);   
    virtual long            SelectByIndex(int indexPar);
-   virtual bool            SelectByTicket(long ticketPar);   
+   virtual bool            SelectByTicket(long ticketPar, bool enableLog = true);   
    //-- Quick Access
    COrder*                 operator[](const int indexPar);
    COrder*                 operator[](const long ticketPar);                 
@@ -120,15 +120,18 @@ long COrder::SelectByIndex(int indexPar)
 //+------------------------------------------------------------------+
 //|     select an order by ticket
 //+------------------------------------------------------------------+
-bool COrder::SelectByTicket(long ticketPar)
+bool COrder::SelectByTicket(long ticketPar, bool enableLog = true)
 {
    if(OrderSelect(ticketPar)){
       this.ValidSelection = true;
       return true;    
    }else{
       this.ValidSelection = false;
-      string msgTemp = "The Order WAS NOT Selected.";
-      return this.Error.CreateErrorCustom(msgTemp,true,false,(__FUNCTION__));
+      if (enableLog){
+         string msgTemp = "The Order WAS NOT Selected.";
+         return this.Error.CreateErrorCustom(msgTemp,true,false,(__FUNCTION__));
+      }
+      return false;
    }
 }
 

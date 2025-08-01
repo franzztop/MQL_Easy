@@ -43,7 +43,7 @@ public:
    virtual string          GetComment(void);  
    //--
    virtual long            SelectByIndex(int indexPar);
-   virtual bool            SelectByTicket(long ticketPar);                     
+   virtual bool            SelectByTicket(long ticketPar, bool enableLog = true);                     
    //-- Quick Access
    CHistoryPosition*       operator[](const int indexPar);
    CHistoryPosition*       operator[](const long ticketPar);                     
@@ -157,7 +157,7 @@ long CHistoryPosition::SelectByIndex(int indexPar)
 //+------------------------------------------------------------------+
 //|      select a position by ticket
 //+------------------------------------------------------------------+
-bool CHistoryPosition::SelectByTicket(long ticketPar)
+bool CHistoryPosition::SelectByTicket(long ticketPar, bool enableLog = true)
 {
    //-- Reset the ticket
    this.mTicket = -1;
@@ -167,9 +167,12 @@ bool CHistoryPosition::SelectByTicket(long ticketPar)
       return true;
    }
    else{
-      string msgTemp       = "The History Position WAS NOT Selected.";
       this.ValidSelection  = false;
-      return this.Error.CreateErrorCustom(msgTemp,true,false,(__FUNCTION__));
+      if (enableLog){
+         string msgTemp       = "The History Position WAS NOT Selected.";
+         return this.Error.CreateErrorCustom(msgTemp,true,false,(__FUNCTION__));
+      }
+      return false;
    }
 }
 
