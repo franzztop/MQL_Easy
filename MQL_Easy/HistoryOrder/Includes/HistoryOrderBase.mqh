@@ -53,6 +53,8 @@ public:
    long                    GetGroupMagicNumber(){return this.GroupMagicNumber;} 
    GROUP_HISTORY_ORDERS    GetGroup(){return this.Group;}  
    void                    SetHistoryRange(datetime startPar,datetime endPar){this.StartDate = startPar;this.EndDate = endPar;}
+   datetime                GetRangeStart(){return this.StartDate;}
+   datetime                GetRangeEnd(){return this.EndDate;}
    //-- Group Properties
    virtual int             GroupTotal(){return -1;}
    virtual double          GroupTotalVolume(){return -1;}      
