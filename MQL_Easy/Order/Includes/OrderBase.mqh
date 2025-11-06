@@ -63,7 +63,7 @@ public:
    virtual bool            Modify(double priceOpenPar = WRONG_VALUE,double stopLossPar = WRONG_VALUE,double takeProfitPar = WRONG_VALUE,
                                        ENUM_SLTP_TYPE sltpPar = SLTP_PRICE, datetime expirationPar = WRONG_VALUE){return false;}   
    virtual long            SelectByIndex(int indexPar){return -1;}
-   virtual bool            SelectByTicket(long ticketPar){return false;}
+   virtual bool            SelectByTicket(long ticketPar,bool enableLog = true){return false;}
    string                  FormatDescription();
   };
 //+------------------------------------------------------------------+

@@ -38,7 +38,7 @@ public:
    virtual string          GetComment(void);  
    //--
    virtual long            SelectByIndex(int indexPar);
-   virtual bool            SelectByTicket(long ticketPar);                     
+   virtual bool            SelectByTicket(long ticketPar, bool enableLog = true);                     
    //-- Quick Access
    CHistoryOrder*          operator[](const int indexPar);
    CHistoryOrder*          operator[](const long ticketPar);                    
@@ -138,7 +138,7 @@ long CHistoryOrder::SelectByIndex(int indexPar)
 //+------------------------------------------------------------------+
 //|      select an order by ticket
 //+------------------------------------------------------------------+
-bool CHistoryOrder::SelectByTicket(long ticketPar)
+bool CHistoryOrder::SelectByTicket(long ticketPar, bool enableLog = true)
 {
    if(OrderSelect((int)ticketPar,SELECT_BY_TICKET,MODE_HISTORY)){   
       this.ValidSelection = true;
@@ -146,8 +146,11 @@ bool CHistoryOrder::SelectByTicket(long ticketPar)
    }
    else{
       this.ValidSelection = false;
-      string msgTemp = "The History WAS NOT Selected.";
-      return this.Error.CreateErrorCustom(msgTemp,true,false,(__FUNCTION__));
+      if(enableLog){
+         string msgTemp = "The History WAS NOT Selected.";
+         return this.Error.CreateErrorCustom(msgTemp,true,false,(__FUNCTION__));
+      }
+      return false;
    }
 }
 

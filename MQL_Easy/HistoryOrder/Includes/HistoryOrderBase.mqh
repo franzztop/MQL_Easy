@@ -70,7 +70,7 @@ public:
    virtual string          GetComment(void){return "";}
    //--
    virtual long            SelectByIndex(int indexPar){return -1;}
-   virtual bool            SelectByTicket(long ticketPar){return false;}
+   virtual bool            SelectByTicket(long ticketPar,bool enableLog = true){return false;}
     
    
   };
