@@ -51,7 +51,7 @@ public:
    virtual double          GroupAverageOpenPrice(){return -1;}  
    virtual double          GroupAveragePositionPrice(){return -1;}  
    virtual double          GroupAverageVolume(){return -1;}    
-   virtual void            GroupCloseAll(uint triesPar = 20){return;}
+   virtual void            GroupCloseAll(uint triesPar = 20, bool enableLog = true){return;}
    //-- Position Properties           
    virtual long            GetTicket(){return -1;}
    virtual datetime        GetTimeOpen(){return -1;}

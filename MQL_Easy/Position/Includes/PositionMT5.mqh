@@ -26,7 +26,7 @@ public:
    virtual double          GroupAverageOpenPrice();  
    virtual double          GroupAveragePositionPrice();
    virtual double          GroupAverageVolume();    
-   virtual void            GroupCloseAll(uint triesPar = 20);
+   virtual void            GroupCloseAll(uint triesPar = 20, bool enableLog = true);
    //-- Position Properties           
    virtual long            GetTicket();
    virtual datetime        GetTimeOpen();
@@ -325,7 +325,7 @@ double CPosition::GroupTotalNetVolume()
 //+------------------------------------------------------------------+
 //|      close all positions of a group
 //+------------------------------------------------------------------+
-void CPosition::GroupCloseAll(uint triesPar = 20)
+void CPosition::GroupCloseAll(uint triesPar = 20, bool enableLog = true)
 {
    //-- tries to close a position
    uint triesTemp = 0;
@@ -362,8 +362,10 @@ void CPosition::GroupCloseAll(uint triesPar = 20)
             request.type  = ORDER_TYPE_BUY;
            }
 		   if(!OrderSend(request,result)){
-				string msgTemp = "The Position WAS NOT Closed.";
-            this.Error.CreateErrorCustom(msgTemp,true,false,(__FUNCTION__),0,"",result.retcode);
+				if(enableLog){
+				   string msgTemp = "The Position WAS NOT Closed.";
+				   this.Error.CreateErrorCustom(msgTemp,true,false,(__FUNCTION__),0,"",result.retcode);
+				}
    	      if (result.retcode == TRADE_RETCODE_MARKET_CLOSED)
    	         continue;
             Sleep(1000);
@@ -372,8 +374,10 @@ void CPosition::GroupCloseAll(uint triesPar = 20)
             i++;
 			} 			
 		}else{
-		   string msgTemp = "The Position WAS NOT Selected.";
-         this.Error.CreateErrorCustom(msgTemp,true,false,(__FUNCTION__));
+		   if(enableLog){
+   		   string msgTemp = "The Position WAS NOT Selected.";
+            this.Error.CreateErrorCustom(msgTemp,true,false,(__FUNCTION__));
+		   }
       }
 	}
 }
