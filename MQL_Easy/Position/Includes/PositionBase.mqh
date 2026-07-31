@@ -25,7 +25,20 @@ enum GROUP_POSITIONS
 //+------------------------------------------------------------------+
 class CPositionBase
   {
-protected:       
+protected:
+   static long             s_capTicket[];
+   static string           s_capSymbol[];
+   static long             s_capMagic[];
+   static int              s_capType[];
+   static double           s_capVolume[];
+   static int              s_capCount;
+   static int              s_lastOpenTotal;
+   static long             s_lastUpdateTimestamp;
+   static ulong            s_lastUpdateId;
+
+   static bool             ValidateCache();
+   static void             UpdateCache(CPositionBase *caller);
+
    string                  GroupSymbol;
    long                    GroupMagicNumber; 
    GROUP_POSITIONS         Group;               
@@ -73,6 +86,17 @@ public:
    virtual bool            SelectByTicket(long ticketPar){return false;}
    string                  FormatDescription();
   };
+
+long CPositionBase::s_capTicket[];
+string CPositionBase::s_capSymbol[];
+long CPositionBase::s_capMagic[];
+int CPositionBase::s_capType[];
+double CPositionBase::s_capVolume[];
+int CPositionBase::s_capCount = 0;
+int CPositionBase::s_lastOpenTotal = 0;
+long CPositionBase::s_lastUpdateTimestamp = 0;
+ulong CPositionBase::s_lastUpdateId = 0;
+
 //+------------------------------------------------------------------+
 //|               Constructor    
 //+------------------------------------------------------------------+

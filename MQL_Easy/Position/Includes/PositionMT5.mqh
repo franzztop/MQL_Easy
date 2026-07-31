@@ -49,7 +49,13 @@ public:
    //-- Quick Access
    CPosition*              operator[](const int indexPar);
    CPosition*              operator[](const long ticketPar);                           
+
+   static ulong            s_updateId;
   };
+
+ulong CPosition::s_updateId = 0L;
+
+
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
@@ -101,24 +107,28 @@ long CPosition::SelectByIndex(int indexPar)
       string nameTemp = PositionGetSymbol(indexPar);
       if(nameTemp == "")return -1;
    }
-   //--
-   int numberPositions      = 0;
-   for (int i = 0; i < PositionsTotal(); i++){
-      long ticketTemp = (long)PositionGetTicket(i);
-		if (ticketTemp > 0){
-		   this.ValidSelection = true; // the selection is valid
-         if(this.ValidPosition(PositionGetString(POSITION_SYMBOL),PositionGetInteger(POSITION_MAGIC),(int)PositionGetInteger(POSITION_TYPE))){ 	
-            if(numberPositions == indexPar){
-               return ticketTemp;   
-            }
-            numberPositions++; 
+
+   if (!ValidateCache())
+      UpdateCache(GetPointer(this));
+
+   int numberPositions = 0;
+   for (int i = 0; i < s_capCount; i++)
+   {
+      if (this.ValidPosition(s_capSymbol[i], s_capMagic[i], s_capType[i]))
+      {
+         if (numberPositions == indexPar)
+         {
+            this.ValidSelection = SelectByTicket(s_capTicket[i], false);
+            if (this.ValidSelection)
+               return s_capTicket[i];
+
+            string msgTemp = "The Position with ticket "+(string)s_capTicket[i]+" WAS NOT Selected.";
+            this.Error.CreateErrorCustom(msgTemp,true,false,(__FUNCTION__));
+            return -1;
          }
-		}else{
-         string msgTemp = "The Position with index "+(string)i+" WAS NOT Selected.";
-         this.Error.CreateErrorCustom(msgTemp,true,false,(__FUNCTION__));
-         this.ValidSelection = false;
+         numberPositions++;
       }
-	}
+   }
 
 	//-- Case when the index is equal or greater than the total positions
 	if(indexPar >= numberPositions){
@@ -127,6 +137,7 @@ long CPosition::SelectByIndex(int indexPar)
       this.Error.CreateErrorCustom(msgTemp,false,false,(__FUNCTION__));
       this.ValidSelection = false;
 	}
+
    return -1;
 }
 
@@ -151,27 +162,21 @@ bool CPosition::SelectByTicket(long ticketPar, bool enableLog = true)
 }
 
 
-
-
 //+------------------------------------------------------------------+
 //|      get the total positions of a group
 //+------------------------------------------------------------------+
 int CPosition::GroupTotal()
 {
-   int totalPositions   = 0;
-   for (int i = PositionsTotal()-1; i >= 0; i--){
-      ulong ticketTemp = PositionGetTicket(i);
-		if (ticketTemp > 0){
-         if(this.ValidPosition(PositionGetString(POSITION_SYMBOL),PositionGetInteger(POSITION_MAGIC),(int)PositionGetInteger(POSITION_TYPE)))
-            totalPositions++;  		   
-		}else{
-         string msgTemp = "The Position with WAS NOT Selected.";
-         this.Error.CreateErrorCustom(msgTemp,true,false,(__FUNCTION__));
-      }
-	}
-   return totalPositions; 
-}
+   if (!ValidateCache())
+      UpdateCache(GetPointer(this));
 
+   int totalPositions = 0;
+   for (int i = 0; i < s_capCount; i++)
+      if (this.ValidPosition(s_capSymbol[i], s_capMagic[i], s_capType[i]))
+         totalPositions++;
+
+   return totalPositions;
+}
 
 
 //+------------------------------------------------------------------+
@@ -179,17 +184,14 @@ int CPosition::GroupTotal()
 //+------------------------------------------------------------------+
 double CPosition::GroupTotalVolume(void)
 {
-   double volumePositions   = 0;
-   for (int i = PositionsTotal()-1; i >= 0; i--){
-      ulong ticketTemp = PositionGetTicket(i);
-		if (ticketTemp > 0){
-         if(this.ValidPosition(PositionGetString(POSITION_SYMBOL),PositionGetInteger(POSITION_MAGIC),(int)PositionGetInteger(POSITION_TYPE)))
-            volumePositions += PositionGetDouble(POSITION_VOLUME);  		   
-		}else{
-         string msgTemp = "The Position WAS NOT Selected.";
-         this.Error.CreateErrorCustom(msgTemp,true,false,(__FUNCTION__));
-      }
-	}
+   if (!ValidateCache())
+      UpdateCache(GetPointer(this));
+
+   double volumePositions = 0.0;
+   for (int i = 0; i < s_capCount; i++)
+      if (this.ValidPosition(s_capSymbol[i], s_capMagic[i], s_capType[i]))
+         volumePositions += s_capVolume[i];
+
    return volumePositions;   
 }
 
@@ -199,18 +201,16 @@ double CPosition::GroupTotalVolume(void)
 //+------------------------------------------------------------------+
 double CPosition::GroupTotalProfit(void)
 {
-   double profitTemp = 0;
-   for (int i = PositionsTotal()-1; i >= 0; i--){
-      ulong ticketTemp = PositionGetTicket(i);
-		if (ticketTemp > 0){
-         if(this.ValidPosition(PositionGetString(POSITION_SYMBOL),PositionGetInteger(POSITION_MAGIC),(int)PositionGetInteger(POSITION_TYPE)))
-            profitTemp += PositionGetDouble(POSITION_PROFIT) + PositionGetDouble(POSITION_SWAP) + AccountInfoDouble(ACCOUNT_COMMISSION_BLOCKED);  		   
-		}else{
-         string msgTemp = "The Position WAS NOT Selected.";
-         this.Error.CreateErrorCustom(msgTemp,true,false,(__FUNCTION__));
-      }
-	}
-	return profitTemp;
+   if (!ValidateCache())
+      UpdateCache(GetPointer(this));
+
+   double profitTemp = 0.0;
+   for (int i = 0; i < s_capCount; i++)
+      if (this.ValidPosition(s_capSymbol[i], s_capMagic[i], s_capType[i])
+      &&  SelectByTicket(s_capTicket[i], false))
+         profitTemp += PositionGetDouble(POSITION_PROFIT) + PositionGetDouble(POSITION_SWAP) + AccountInfoDouble(ACCOUNT_COMMISSION_BLOCKED);
+
+   return profitTemp;   
 }
 
 
@@ -299,8 +299,6 @@ double CPosition::GroupAverageVolume()
 }
 
 
-
-
 //+------------------------------------------------------------------+
 //|     get the total net volume of a group
 //+------------------------------------------------------------------+
@@ -321,6 +319,7 @@ double CPosition::GroupTotalNetVolume()
    }
    return sumNetVolumesTemp;
 }
+
 
 //+------------------------------------------------------------------+
 //|      close all positions of a group
@@ -383,8 +382,6 @@ void CPosition::GroupCloseAll(uint triesPar = 20, bool enableLog = true)
 }
 
 
-
-
 //+------------------------------------------------------------------+
 //|      get the ticket of a position
 //+------------------------------------------------------------------+
@@ -395,7 +392,6 @@ long CPosition::GetTicket(void)
 }  
 
 
-
 //+------------------------------------------------------------------+
 //|      get the open time of a position
 //+------------------------------------------------------------------+
@@ -404,7 +400,6 @@ datetime CPosition::GetTimeOpen(void)
    if(!this.ValidSelection)return -1;
    return((datetime)PositionGetInteger(POSITION_TIME));
 }
-
 
 
 //+------------------------------------------------------------------+
@@ -425,7 +420,6 @@ long CPosition::GetMagicNumber(void)
    if(!this.ValidSelection)return -1;
    return(PositionGetInteger(POSITION_MAGIC));
 }
-
 
 
 //+------------------------------------------------------------------+
@@ -636,7 +630,6 @@ bool CPosition::ClosePartial(double volumePar, uint triesPar = 20)
 }
 
 
-
 //+------------------------------------------------------------------+
 //|        modify a position
 //+------------------------------------------------------------------+
@@ -685,5 +678,49 @@ bool CPosition::Modify(double stopLossPar = WRONG_VALUE,double takeProfitPar = W
 }
 
 
+//+------------------------------------------------------------------+
+//|        validate positions cached data
+//+------------------------------------------------------------------+
+static bool CPositionBase::ValidateCache()
+{
+   MqlTick tick;
+   SymbolInfoTick(_Symbol, tick);
+   return (s_lastUpdateId != 0L || tick.time_msc == s_lastUpdateTimestamp) && s_lastUpdateId == CPosition::s_updateId && PositionsTotal() == s_lastOpenTotal;
+}
 
 
+//+------------------------------------------------------------------+
+//|        update positions cache
+//+------------------------------------------------------------------+
+static void CPositionBase::UpdateCache(CPositionBase *caller)
+{
+   const int total = PositionsTotal();
+   if (ArraySize(s_capTicket) < total){
+      ArrayResize(s_capTicket, total);
+      ArrayResize(s_capSymbol, total);
+      ArrayResize(s_capMagic, total);
+      ArrayResize(s_capType, total);
+      ArrayResize(s_capVolume, total);
+   }
+   int n = 0;
+   for (int i = total - 1; i >= 0; i--){
+      const long ticketTemp = (long)PositionGetTicket(i);
+      if (ticketTemp > 0){
+         s_capTicket[n] = ticketTemp;
+         s_capSymbol[n] = PositionGetString(POSITION_SYMBOL);
+         s_capMagic[n] = PositionGetInteger(POSITION_MAGIC);
+         s_capType[n] = (int)PositionGetInteger(POSITION_TYPE);
+         s_capVolume[n] = PositionGetDouble(POSITION_VOLUME);
+         n++;
+      } else if (caller != NULL){
+         const string msgTemp = "The Position with WAS NOT Selected.";
+         caller.Error.CreateErrorCustom(msgTemp, true, false, (__FUNCTION__));
+      }
+   }
+   MqlTick tick;
+   SymbolInfoTick(_Symbol, tick);
+   s_capCount = n;
+   s_lastOpenTotal = total;
+   s_lastUpdateTimestamp = tick.time_msc;
+   s_lastUpdateId = CPosition::s_updateId;
+}
