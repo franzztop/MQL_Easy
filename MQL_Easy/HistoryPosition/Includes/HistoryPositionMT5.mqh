@@ -123,12 +123,13 @@ long CHistoryPosition::SelectByIndex(int indexPar)
       ulong ticketTemp = HistoryDealGetTicket(i);
 		if (ticketTemp > 0){
 		   this.ValidSelection = true;
-         if(this.ValidPosition(HistoryDealGetString(ticketTemp,DEAL_SYMBOL),HistoryDealGetInteger(ticketTemp,DEAL_MAGIC),
-                      (int)HistoryDealGetInteger(ticketTemp,DEAL_TYPE)) && HistoryDealGetInteger(ticketTemp,DEAL_ENTRY) == DEAL_ENTRY_IN
-                                 && HistoryDealGetInteger(ticketTemp,DEAL_TYPE) != DEAL_TYPE_BALANCE
-                                 && HistorySelectByPosition(HistoryDealGetInteger(ticketTemp,DEAL_POSITION_ID))
-                                 && (ticketTemp = HistoryDealGetTicket(HistoryDealsTotal()-1)) > 0
-                                 && (HistoryDealGetInteger(ticketTemp,DEAL_ENTRY) == DEAL_ENTRY_OUT || HistoryDealGetInteger(ticketTemp,DEAL_ENTRY) == DEAL_ENTRY_OUT_BY))
+		   if(HistoryDealGetInteger(ticketTemp,DEAL_ENTRY) != DEAL_ENTRY_IN
+		   && HistorySelectByPosition(HistoryDealGetInteger(ticketTemp,DEAL_POSITION_ID))
+		   && (ticketTemp = HistoryDealGetTicket(0)) > 0
+		   && HistoryDealGetInteger(ticketTemp,DEAL_ENTRY) == DEAL_ENTRY_IN
+         && this.ValidPosition(HistoryDealGetString(ticketTemp,DEAL_SYMBOL),
+                               HistoryDealGetInteger(ticketTemp,DEAL_MAGIC),
+                               (int)HistoryDealGetInteger(ticketTemp,DEAL_TYPE)))
          { 	
             if(numberPositions == indexPar){
                this.mTicket = HistoryDealGetInteger(ticketTemp,DEAL_POSITION_ID);
@@ -192,12 +193,13 @@ int CHistoryPosition::GroupTotal()
    for (int i = HistoryDealsTotal()-1; i >= 0 && this.HistoryRange(); i--){
       ulong ticketTemp = HistoryDealGetTicket(i);
 		if (ticketTemp > 0){
-         if(this.ValidPosition(HistoryDealGetString(ticketTemp,DEAL_SYMBOL),HistoryDealGetInteger(ticketTemp,DEAL_MAGIC),
-            (int)HistoryDealGetInteger(ticketTemp,DEAL_TYPE)) && HistoryDealGetInteger(ticketTemp,DEAL_ENTRY) == DEAL_ENTRY_IN
-                  && HistoryDealGetInteger(ticketTemp,DEAL_TYPE) != DEAL_TYPE_BALANCE
-                  && HistorySelectByPosition(HistoryDealGetInteger(ticketTemp,DEAL_POSITION_ID))
-                  && (ticketTemp = HistoryDealGetTicket(HistoryDealsTotal()-1)) > 0
-                  && (HistoryDealGetInteger(ticketTemp,DEAL_ENTRY) == DEAL_ENTRY_OUT || HistoryDealGetInteger(ticketTemp,DEAL_ENTRY) == DEAL_ENTRY_OUT_BY))
+		   if(HistoryDealGetInteger(ticketTemp,DEAL_ENTRY) != DEAL_ENTRY_IN
+		   && HistorySelectByPosition(HistoryDealGetInteger(ticketTemp,DEAL_POSITION_ID))
+		   && (ticketTemp = HistoryDealGetTicket(0)) > 0
+		   && HistoryDealGetInteger(ticketTemp,DEAL_ENTRY) == DEAL_ENTRY_IN
+         && this.ValidPosition(HistoryDealGetString(ticketTemp,DEAL_SYMBOL),
+                               HistoryDealGetInteger(ticketTemp,DEAL_MAGIC),
+                               (int)HistoryDealGetInteger(ticketTemp,DEAL_TYPE)))
                totalPositions++;  		   
 		}else{
          string msgTemp = "The History Position WAS NOT Selected.";
@@ -221,12 +223,13 @@ double CHistoryPosition::GroupTotalVolume(void)
    for (int i = HistoryDealsTotal()-1; i >= 0 && this.HistoryRange(); i--){
       ulong ticketTemp = HistoryDealGetTicket(i);
 		if (ticketTemp > 0){
-         if(this.ValidPosition(HistoryDealGetString(ticketTemp,DEAL_SYMBOL),HistoryDealGetInteger(ticketTemp,DEAL_MAGIC),
-            (int)HistoryDealGetInteger(ticketTemp,DEAL_TYPE)) && HistoryDealGetInteger(ticketTemp,DEAL_ENTRY) == DEAL_ENTRY_IN
-                  && HistoryDealGetInteger(ticketTemp,DEAL_TYPE) != DEAL_TYPE_BALANCE
-                  && HistorySelectByPosition(HistoryDealGetInteger(ticketTemp,DEAL_POSITION_ID))
-                  && (ticketTemp = HistoryDealGetTicket(HistoryDealsTotal()-1)) > 0
-                  && (HistoryDealGetInteger(ticketTemp,DEAL_ENTRY) == DEAL_ENTRY_OUT || HistoryDealGetInteger(ticketTemp,DEAL_ENTRY) == DEAL_ENTRY_OUT_BY))
+		   if(HistoryDealGetInteger(ticketTemp,DEAL_ENTRY) != DEAL_ENTRY_IN
+ 		   && HistorySelectByPosition(HistoryDealGetInteger(ticketTemp,DEAL_POSITION_ID))
+		   && (ticketTemp = HistoryDealGetTicket(0)) > 0
+		   && HistoryDealGetInteger(ticketTemp,DEAL_ENTRY) == DEAL_ENTRY_IN
+         && this.ValidPosition(HistoryDealGetString(ticketTemp,DEAL_SYMBOL),
+                               HistoryDealGetInteger(ticketTemp,DEAL_MAGIC),
+                               (int)HistoryDealGetInteger(ticketTemp,DEAL_TYPE)))
                volumePositions += HistoryDealGetDouble(ticketTemp,DEAL_VOLUME);  		   
 		}else{
          string msgTemp = "The History Position WAS NOT Selected.";
@@ -249,17 +252,19 @@ double CHistoryPosition::GroupTotalProfit(void)
    for (int i = HistoryDealsTotal()-1; i >= 0 && this.HistoryRange(); i--){
       ulong ticketTemp = HistoryDealGetTicket(i);
 		if (ticketTemp > 0){
-         if(this.ValidPosition(HistoryDealGetString(ticketTemp,DEAL_SYMBOL),HistoryDealGetInteger(ticketTemp,DEAL_MAGIC),
-            (int)HistoryDealGetInteger(ticketTemp,DEAL_TYPE)) && HistoryDealGetInteger(ticketTemp,DEAL_ENTRY) == DEAL_ENTRY_IN
-                  && HistoryDealGetInteger(ticketTemp,DEAL_TYPE) != DEAL_TYPE_BALANCE
-                  && HistorySelectByPosition(HistoryDealGetInteger(ticketTemp,DEAL_POSITION_ID))
-                  && (ticketTemp = HistoryDealGetTicket(HistoryDealsTotal()-1)) > 0
-                  && (HistoryDealGetInteger(ticketTemp,DEAL_ENTRY) == DEAL_ENTRY_OUT || HistoryDealGetInteger(ticketTemp,DEAL_ENTRY) == DEAL_ENTRY_OUT_BY)){
+		   if(HistoryDealGetInteger(ticketTemp,DEAL_ENTRY) != DEAL_ENTRY_IN
+		   && HistorySelectByPosition(HistoryDealGetInteger(ticketTemp,DEAL_POSITION_ID))
+		   && (ticketTemp = HistoryDealGetTicket(0)) > 0
+		   && HistoryDealGetInteger(ticketTemp,DEAL_ENTRY) == DEAL_ENTRY_IN
+         && this.ValidPosition(HistoryDealGetString(ticketTemp,DEAL_SYMBOL),
+                               HistoryDealGetInteger(ticketTemp,DEAL_MAGIC),
+                               (int)HistoryDealGetInteger(ticketTemp,DEAL_TYPE))){
             for(int d = 0; d < HistoryDealsTotal(); d++){
                ticketTemp = HistoryDealGetTicket(d);
                if (ticketTemp > 0)
-                  positionsProfit += HistoryDealGetDouble(ticketTemp,DEAL_PROFIT) + HistoryDealGetDouble(ticketTemp,DEAL_SWAP) 
-                     + HistoryDealGetDouble(ticketTemp,DEAL_COMMISSION);  		   
+                  positionsProfit += HistoryDealGetDouble(ticketTemp,DEAL_PROFIT)
+                                  + HistoryDealGetDouble(ticketTemp,DEAL_SWAP)
+                                  + HistoryDealGetDouble(ticketTemp,DEAL_COMMISSION);  		   
             }               
          }
 		}else{
