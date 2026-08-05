@@ -51,6 +51,7 @@ public:
    CPosition*              operator[](const long ticketPar);                           
 
    static ulong            s_updateId;
+   static double           GetDealsCommissions();
   };
 
 ulong CPosition::s_updateId = 0L;
@@ -207,8 +208,8 @@ double CPosition::GroupTotalProfit(void)
    double profitTemp = 0.0;
    for (int i = 0; i < s_capCount; i++)
       if (this.ValidPosition(s_capSymbol[i], s_capMagic[i], s_capType[i])
-      &&  SelectByTicket(s_capTicket[i], false))
-         profitTemp += PositionGetDouble(POSITION_PROFIT) + PositionGetDouble(POSITION_SWAP) + AccountInfoDouble(ACCOUNT_COMMISSION_BLOCKED);
+      &&  PositionSelectByTicket(s_capTicket[i]))
+         profitTemp += PositionGetDouble(POSITION_PROFIT) + PositionGetDouble(POSITION_SWAP) + CPosition::GetDealsCommissions();
 
    return profitTemp;   
 }
@@ -488,7 +489,22 @@ double CPosition::GetProfit(void)
 double CPosition::GetCommission(void)
 {
    if(!this.ValidSelection)return -1;
-   return PositionGetDouble(POSITION_COMMISSION);
+   return CPosition::GetDealsCommissions();
+}
+
+static double CPosition::GetDealsCommissions(void)
+{
+   const long posId = PositionGetInteger(POSITION_IDENTIFIER);
+   if (posId == 0 || !HistorySelectByPosition(posId))
+      return 0.0;
+   double commission = 0.0;
+   for (int i = 0; i < HistoryDealsTotal(); i++)
+   {
+      const ulong dealTicket = HistoryDealGetTicket(i);
+      if (dealTicket == 0) continue;
+      commission += HistoryDealGetDouble(dealTicket, DEAL_COMMISSION);
+   }
+   return commission;
 }
 
 
